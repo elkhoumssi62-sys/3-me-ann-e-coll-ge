@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Français Interactif : Langue & Grammaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .timer-critique { color: #ef4444; animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .tab-active { border-bottom: 4px solid #4f46e5; color: #4f46e5; font-weight: bold; }
+        .latex-style { font-family: "Times New Roman", serif; font-style: italic; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <div id="app" class="max-w-2xl mx-auto pb-10">
+        
+        <!-- BARRE DE NAVIGATION HAUT -->
+        <nav class="bg-indigo-700 text-white p-4 shadow-lg mb-6 sticky top-0 z-50 flex justify-between items-center">
+            <span class="font-bold">App-Pédagogique v1.0</span>
+            <button id="btn-home" onclick="goHome()" class="hidden bg-indigo-500 px-3 py-1 rounded text-sm">Accueil</button>
+        </nav>
+
+        <!-- ECRAN ACCUEIL -->
+        <div id="screen-home" class="p-4">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-black text-slate-800">Modules de Langue</h1>
+                <p class="text-slate-600">Niveau : Secondaire / Universitaire</p>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="loadModule('condition')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-blue-500 group">
+                    <h2 class="text-xl font-bold group-hover:text-blue-600">1. L'expression de la Condition</h2>
+                </button>
+                <button onclick="loadModule('hypothese')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-purple-500 group">
+                    <h2 class="text-xl font-bold group-hover:text-purple-600">2. L'expression de l'Hypothèse</h2>
+                </button>
+                <button onclick="loadModule('consequence')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-green-500 group">
+                    <h2 class="text-xl font-bold group-hover:text-green-600">3. L'expression de la Conséquence</h2>
+                </button>
+                <button onclick="loadModule('concession')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-red-500 group">
+                    <h2 class="text-xl font-bold group-hover:text-red-600">4. L'expression de la Concession</h2>
+                </button>
+            </div>
+        </div>
+
+        <!-- ECRAN MODULE (CONTENU COMPLET) -->
+        <div id="screen-module" class="hidden p-4">
+            <h2 id="mod-title" class="text-2xl font-black mb-4 text-slate-800 uppercase tracking-tight"></h2>
+            
+            <!-- ONGLETS -->
+            <div class="flex bg-white rounded-t-xl border-b overflow-hidden">
+                <button id="tab-btn-obs" onclick="switchTab('obs')" class="flex-1 py-3 text-sm uppercase tracking-wider tab-active">Observation</button>
+                <button id="tab-btn-syn" onclick="switchTab('syn')" class="flex-1 py-3 text-sm uppercase tracking-wider">Synthèse</button>
+                <button id="tab-btn-quiz" onclick="switchTab('quiz')" class="flex-1 py-3 text-sm uppercase tracking-wider">Application (10s)</button>
+            </div>
+
+            <div class="bg-white p-6 rounded-b-xl shadow-sm min-h-[400px]">
+                <!-- CONTENU OBSERVATION -->
+                <div id="tab-obs" class="tab-content">
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                        <h3 class="font-bold text-blue-800 mb-2 underline">Support d'observation :</h3>
+                        <p id="obs-support" class="italic text-slate-700"></p>
+                    </div>
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-slate-800">Questions d'analyse :</h3>
+                        <ul id="obs-questions" class="list-decimal ml-5 space-y-3 text-slate-600"></ul>
+                    </div>
+                </div>
+
+                <!-- CONTENU SYNTHÈSE -->
+                <div id="tab-syn" class="tab-content hidden prose prose-slate">
+                    <div id="syn-content" class="space-y-4"></div>
+                </div>
+
+                <!-- CONTENU QUIZ -->
+                <div id="tab-quiz" class="tab-content hidden text-center">
+                    <div class="flex justify-between items-center mb-6 px-2">
+                        <div id="timer" class="text-3xl font-black text-indigo-600">10</div>
+                        <div class="text-sm font-bold bg-slate-100 px-3 py-1 rounded" id="quiz-progress">1 / 18</div>
+                    </div>
+                    <p id="quiz-question" class="text-xl font-semibold mb-8 text-slate-800"></p>
+                    <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
+                    <div id="quiz-feedback" class="mt-6 p-4 rounded-xl hidden font-bold"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            condition: {
+                title: "La Condition",
+                obs: {
+                    sup: "« Si tu étudies avec rigueur, tu réussiras ton examen. Au cas où tu aurais des difficultés, préviens-moi. Tu obtiendras ton diplôme à condition que tu travailles. »",
+                    q: ["Quelle est l'action principale dans la 1ère phrase ?", "Quelle est la condition sine qua non ?", "Analysez les temps avec 'Si'.", "Quel mode après 'au cas où' ?", "Nuance de 'à condition que' ?"]
+                },
+                syn: `<h3>I. Le système avec « Si »</h3>
+                      <p>- <b>Réel :</b> <span class="latex-style">Si + présent → futur</span><br>- <b>Éventuel :</b> <span class="latex-style">Si + imparfait → conditionnel présent</span></p>
+                      <h3>II. Conjonctions et Prépositions</h3>
+                      <p>- <b>Subjonctif :</b> À condition que, pourvu que.<br>- <b>Conditionnel :</b> Au cas où.<br>- <b>Prépositions :</b> En cas de + Nom, à condition de + Infinitif.</p>`,
+                quiz: [
+                    {q: "Si vous (prendre) le train de 8h...", o: ["prendrez", "prenez", "pris"], r: "prenez"},
+                    {q: "Nous irions en vacances si nous (avoir)...", o: ["aurions", "avions", "aurons"], r: "avions"},
+                    {q: "Au cas où il (pleuvoir)...", o: ["pleuvrait", "pleuve", "pleuvra"], r: "pleuvrait"},
+                    {q: "À condition que tu me le (rendre)...", o: ["rends", "rendes", "rendra"], r: "rendes"},
+                    {q: "Pourvu qu'il (faire) beau...", o: ["fait", "fasse", "fera"], r: "fasse"},
+                    {q: "Si j'avais su, je ne (venir) pas...", o: ["viendrais", "serais venu", "suis venu"], r: "serais venu"},
+                    {q: "Transformation : S'il y a une urgence...", o: ["En cas d'urgence", "En cas qu'urgence"], r: "En cas d'urgence"},
+                    {q: "Transformation : Je viendrai si tu m'invites...", o: ["À condition que tu m'invites", "À condition de m'inviter"], r: "À condition que tu m'invites"},
+                    {q: "Transformation : Il réussira s'il fait un effort...", o: ["Pour peu qu'il fait", "Pour peu qu'il fasse"], r: "Pour peu qu'il fasse"},
+                    {q: "Transformation : Tu peux sortir mais finis tes devoirs...", o: ["À condition de finir", "À condition que tu finis"], r: "À condition de finir"},
+                    {q: "Si le vent se lève... (Au cas où)", o: ["Au cas où il se lèverait", "Au cas où il se lève"], r: "Au cas où il se lèverait"},
+                    {q: "Elle guérira si elle suit le traitement... (Pourvu)", o: ["Pourvu qu'elle suive", "Pourvu qu'elle suit"], r: "Pourvu qu'elle suive"},
+                    {q: "Si l'humanité ne réduit pas le plastique...", o: ["Océans seront pollués", "Océans seraient pollués"], r: "Océans seront pollués"},
+                    {q: "Au cas où vous perdriez votre chemin...", o: ["Téléphonez-moi", "Téléphoner-moi"], r: "Téléphonez-moi"},
+                    {q: "Vous pouvez passer à condition que...", o: ["Vous fassiez attention", "Vous faites attention"], r: "Vous fassiez attention"},
+                    {q: "Si les dinosaures n'avaient pas disparu...", o: ["L'homme n'existerait pas", "L'homme n'existera pas"], r: "L'homme n'existerait pas"},
+                    {q: "Pourvu que le gouvernement (agir) vite...", o: ["agisse", "agit"], r: "agisse"},
+                    {q: "En cas de panne d'électricité...", o: ["allumez des bougies", "allumer des bougies"], r: "allumez des bougies"}
+                ]
+            },
+            hypothese: {
+                title: "L'Hypothèse",
+                obs: {
+                    sup: "« Supposons que nous soyons perdus, que ferions-nous ? À supposer qu'il accepte, le projet verrait le jour. »",
+                    q: ["Faits certains ou imaginaires ?", "Mode après 'supposons que' ?", "Sentiment exprimé ?", "Remplaçable par 'Si' ?", "Ponctuation type ?"]
+                },
+                syn: `<p>L'hypothèse est une supposition incertaine.</p>
+                      <ul><li><b>Subjonctif :</b> Supposons que, en admettant que.</li><li><b>Conditionnel :</b> Au cas où.</li><li><b>Gérondif :</b> En travaillant davantage (Si tu travaillais...).</li></ul>`,
+                quiz: [
+                    {q: "En admettant qu'il (être) coupable...", o: ["est", "soit", "serait"], r: "soit"},
+                    {q: "À supposer que nous (partir)...", o: ["partions", "partons", "partirions"], r: "partions"},
+                    {q: "Supposons que le prix (baisser)...", o: ["baisse", "baisses", "baisserait"], r: "baisse"},
+                    {q: "Fussiez-vous riche...", o: ["vous seriez heureux", "vous êtes heureux"], r: "vous seriez heureux"},
+                    {q: "En (chercher) bien...", o: ["cherchant", "chercher", "cherché"], r: "cherchant"},
+                    {q: "À supposer que vous (avoir) le choix...", o: ["ayez", "avez", "auriez"], r: "ayez"},
+                    {q: "Si nous manquons le train... (À supposer que)", o: ["À supposer qu'on manque", "À supposer qu'on manquions"], r: "À supposer qu'on manquions"},
+                    {q: "Si vous gagnez au loto... (En admettant que)", o: ["En admettant que vous gagniez", "En admettant que vous gagnez"], r: "En admettant que vous gagniez"},
+                    {q: "Si la terre s'arrêtait... (Supposons que)", o: ["Supposons qu'elle s'arrêtât", "Supposons qu'elle s'arrête"], r: "Supposons qu'elle s'arrêtât"},
+                    {q: "Si tu m'avais écouté... (Gérondif)", o: ["En m'écoutant", "En m'avoir écouté"], r: "En m'écoutant"},
+                    {q: "S'il vient demain... (Dans l'hypothèse où)", o: ["Hypothèse où il viendrait", "Hypothèse où il vient"], r: "Hypothèse où il viendrait"},
+                    {q: "Si vous aviez un don... (À supposer que)", o: ["À supposer que vous eussiez", "À supposer que vous aviez"], r: "À supposer que vous eussiez"},
+                    {q: "Mars : À supposer que l'homme colonise Mars...", o: ["La vie changerait", "La vie changera"], r: "La vie changerait"},
+                    {q: "IA : En admettant que l'IA devienne consciente...", o: ["Ce serait dangereux", "Ce sera dangereux"], r: "Ce serait dangereux"},
+                    {q: "Temps : Supposons qu'on voyage dans le passé...", o: ["On verrait l'histoire", "On voit l'histoire"], r: "On verrait l'histoire"},
+                    {q: "Mort : À supposer que la mort soit vaincue...", o: ["Terre serait pleine", "Terre est pleine"], r: "Terre serait pleine"},
+                    {q: "Pensées : Si nous pouvions lire les pensées...", o: ["Plus de secrets", "Plus de secrets (subjonctif)"], r: "Plus de secrets"},
+                    {q: "Langue : En admettant une langue unique...", o: ["Échanges faciles", "Échanges sont faciles"], r: "Échanges faciles"}
+                ]
+            },
+            consequence: {
+                title: "La Conséquence",
+                obs: {
+                    sup: "« Il a tant neigé que les routes sont bloquées. Il est trop tard pour que nous puissions sortir. Sa peur était telle qu'il restait pétrifié. »",
+                    q: ["Fait initial phrase 1 ?", "Résultat de ce fait ?", "Mot d'intensité ?", "Pourquoi le subjonctif phrase 2 ?", "Adjectif phrase 3 ?"]
+                },
+                syn: `<p>Exprime le résultat d'une action.</p>
+                      <ul><li><b>Indicatif :</b> Si bien que, de sorte que, tellement... que.</li><li><b>Subjonctif :</b> Trop... pour que, assez... pour que.</li><li><b>Corrélation :</b> <span class="latex-style">Si + Adj + que</span>.</li></ul>`,
+                quiz: [
+                    {q: "Il fait froid. Les lacs gèlent.", o: ["si bien que", "pour que"], r: "si bien que"},
+                    {q: "Elle est fatiguée. Elle s'endort.", o: ["tellement... que", "trop... pour"], r: "tellement... que"},
+                    {q: "Il y avait du bruit. Rien entendu.", o: ["tant de... que", "tel... que"], r: "tant de... que"},
+                    {q: "Exercice difficile. Pas fini.", o: ["trop... pour que je le finisse", "trop... pour je finis"], r: "trop... pour que je le finisse"},
+                    {q: "Il a travaillé dur. Réussite.", o: ["Par conséquent", "Pourtant"], r: "Par conséquent"},
+                    {q: "Tempête forte. Arbres déracinés.", o: ["Une telle... que", "Si... que"], r: "Une telle... que"},
+                    {q: "Il court ____ vite qu'il a gagné.", o: ["si", "tant de"], r: "si"},
+                    {q: "Elle a ____ d'amis qu'elle sort tout le temps.", o: ["tant", "tellement"], r: "tant"},
+                    {q: "Il a ____ plu que tout est inondé.", o: ["tant", "tellement"], r: "tant"},
+                    {q: "Il fait un ____ bruit !", o: ["tel", "si"], r: "tel"},
+                    {q: "C'est ____ beau que je pleure.", o: ["si", "tant"], r: "si"},
+                    {q: "Vent avec une ____ force.", o: ["telle", "tel"], r: "telle"},
+                    {q: "Il est très jeune ; ne peut pas comprendre.", o: ["trop jeune pour comprendre", "assez jeune pour comprendre"], r: "trop jeune pour comprendre"},
+                    {q: "Intelligent ; peut résoudre.", o: ["assez pour résoudre", "trop pour résoudre"], r: "assez pour résoudre"},
+                    {q: "Soupe chaude ; imangeable.", o: ["trop chaude pour être mangée", "assez chaude pour manger"], r: "trop chaude pour être mangée"},
+                    {q: "Énigme simple ; tout le monde trouve.", o: ["assez simple pour que tous trouvent", "trop simple pour trouver"], r: "assez simple pour que tous trouvent"},
+                    {q: "Nuit ; on ne voit rien.", o: ["trop nuit pour voir", "assez nuit pour voir"], r: "trop nuit pour voir"},
+                    {q: "Courageux ; peut affronter.", o: ["assez courageux pour affronter", "trop courageux pour affronter"], r: "assez courageux pour affronter"}
+                ]
+            },
+            concession: {
+                title: "La Concession",
+                obs: {
+                    sup: "« Bien qu'il soit malade, il est venu. Il est riche, pourtant il vit modestement. »",
+                    q: ["Est-ce logique de travailler malade ?", "Mode après 'Bien que' ?", "Mot d'opposition phrase 2 ?", "Portée phrase 3 ?", "Changement avec 'Malgré' ?"]
+                },
+                syn: `<p>Contradiction entre deux faits liés.</p>
+                      <ul><li><b>Subjonctif :</b> Bien que, quoique.</li><li><b>Indicatif :</b> Même si.</li><li><b>Préposition :</b> Malgré + Nom.</li><li><b>Idiome :</b> Avoir beau + Infinitif.</li></ul>`,
+                quiz: [
+                    {q: "(Sa force), il n'a pas pu...", o: ["Malgré", "Bien que"], r: "Malgré"},
+                    {q: "(Il fasse) froid, il sort...", o: ["Bien que", "Malgré"], r: "Bien que"},
+                    {q: "(Ses efforts), il a échoué...", o: ["Malgré", "Quoique"], r: "Malgré"},
+                    {q: "(Nous soyons) en été, il fait froid...", o: ["Bien que", "Malgré"], r: "Bien que"},
+                    {q: "(La pluie), le match continue...", o: ["Malgré", "Bien que"], r: "Malgré"},
+                    {q: "(Elle soit) timide, elle parle...", o: ["Bien que", "Malgré"], r: "Bien que"},
+                    {q: "Bien qu'il s'entraîne, pas de progrès.", o: ["Il a beau s'entraîner", "Il s'entraîne bien"], r: "Il a beau s'entraîner"},
+                    {q: "Quoique je cherche mes clés...", o: ["J'ai beau chercher", "Je cherche beau"], r: "J'ai beau chercher"},
+                    {q: "Même s'il crie...", o: ["Il a beau crier", "Il crie beau"], r: "Il a beau crier"},
+                    {q: "Malgré ses explications...", o: ["Il a beau expliquer", "Bien qu'expliquer"], r: "Il a beau expliquer"},
+                    {q: "Bien qu'elle soit riche...", o: ["Elle a beau être riche", "Bien qu'être riche"], r: "Elle a beau être riche"},
+                    {q: "Quoique tu insistes...", o: ["Tu as beau insister", "Malgré insister"], r: "Tu as beau insister"},
+                    {q: "Il est âgé ___ actif.", o: ["pourtant", "bien que"], r: "pourtant"},
+                    {q: "Je n'aime pas le sport ___ j'y vais.", o: ["bien que", "malgré"], r: "bien que"},
+                    {q: "Il pleut ___ nous sortons.", o: ["même si", "bien que"], r: "même si"},
+                    {q: "Intelligent ___ commet des erreurs.", o: ["néanmoins", "quoique"], r: "néanmoins"},
+                    {q: "Ami ___ je ne peux pas t'aider.", o: ["quand bien même", "malgré"], r: "quand bien même"},
+                    {q: "Voiture ___ prend le bus.", o: ["au lieu de l'utiliser", "pourtant utiliser"], r: "au lieu de l'utiliser"}
+                ]
+            }
+        };
+
+        let currentMod = null;
+        let qIdx = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 10;
+
+        function loadModule(key) {
+            currentMod = data[key];
+            qIdx = 0; score = 0;
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-module').classList.remove('hidden');
+            document.getElementById('btn-home').classList.remove('hidden');
+            document.getElementById('mod-title').innerText = currentMod.title;
+            
+            // Obs
+            document.getElementById('obs-support').innerText = currentMod.obs.sup;
+            const qList = document.getElementById('obs-questions');
+            qList.innerHTML = currentMod.obs.q.map(q => `<li>${q}</li>`).join('');
+            
+            // Syn
+            document.getElementById('syn-content').innerHTML = currentMod.syn;
+            
+            switchTab('obs');
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab-btn-"]').forEach(b => b.classList.remove('tab-active'));
+            
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
+            
+            if(tab === 'quiz') startQuiz();
+            else clearInterval(timer);
+        }
+
+        function startQuiz() {
+            qIdx = 0; score = 0;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if(qIdx >= currentMod.quiz.length) {
+                alert(`Terminé ! Score : ${score} / ${currentMod.quiz.length}`);
+                goHome();
+                return;
+            }
+
+            const q = currentMod.quiz[qIdx];
+            document.getElementById('quiz-progress').innerText = `${qIdx + 1} / ${currentMod.quiz.length}`;
+            document.getElementById('quiz-question').innerText = q.q;
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            
+            const opts = document.getElementById('quiz-options');
+            opts.innerHTML = '';
+            q.o.forEach(opt => {
+                const b = document.createElement('button');
+                b.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-xl hover:bg-indigo-50 font-medium transition text-left";
+                b.innerText = opt;
+                b.onclick = () => check(opt);
+                opts.appendChild(b);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 10;
+            const tDiv = document.getElementById('timer');
+            tDiv.innerText = timeLeft;
+            tDiv.classList.remove('timer-critique');
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                tDiv.innerText = timeLeft;
+                if(timeLeft <= 3) tDiv.classList.add('timer-critique');
+                if(timeLeft <= 0) { clearInterval(timer); check(null); }
+            }, 1000);
+        }
+
+        function check(choice) {
+            clearInterval(timer);
+            const correct = currentMod.quiz[qIdx].r;
+            const feed = document.getElementById('quiz-feedback');
+            feed.classList.remove('hidden');
+
+            if(choice === correct) {
+                score++;
+                feed.innerText = "Correct ! ✨";
+                feed.className = "mt-6 p-4 rounded-xl font-bold bg-green-100 text-green-700";
+            } else {
+                feed.innerText = `Incorrect. Réponse : ${correct}`;
+                feed.className = "mt-6 p-4 rounded-xl font-bold bg-red-100 text-red-700";
+            }
+
+            setTimeout(() => { qIdx++; showQuestion(); }, 1500);
+        }
+
+        function goHome() {
+            clearInterval(timer);
+            document.getElementById('screen-home').classList.remove('hidden');
+            document.getElementById('screen-module').classList.add('hidden');
+            document.getElementById('btn-home').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
