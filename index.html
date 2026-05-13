@@ -3,317 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Français Interactif : Langue & Grammaire</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Français : 3ème Année Collège - Production Écrite</title>
     <style>
-        .timer-critique { color: #ef4444; animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .tab-active { border-bottom: 4px solid #4f46e5; color: #4f46e5; font-weight: bold; }
-        .latex-style { font-family: "Times New Roman", serif; font-style: italic; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; }
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f8f9fa;
+            --border: #dcdde1;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #8e44ad;
+        }
+
+        body { font-family: 'Arial', sans-serif; background: var(--bg); color: #333; line-height: 1.6; padding: 20px; }
+        .app-container { max-width: 1000px; margin: auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        header { text-align: center; border-bottom: 4px solid var(--primary); margin-bottom: 30px; }
+        .prof-header { color: #7f8c8d; font-style: italic; margin-bottom: 20px; }
+        
+        h1 { color: var(--primary); margin-bottom: 5px; }
+        h2 { background: var(--primary); color: white; padding: 10px; border-radius: 5px; margin-top: 30px; }
+        h3 { border-left: 5px solid var(--accent); padding-left: 10px; color: var(--primary); margin-top: 25px; }
+
+        .content-box { background: #fff; border: 1px solid var(--border); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        
+        textarea { width: 100%; min-height: 80px; padding: 12px; border: 1px solid var(--border); border-radius: 5px; font-size: 14px; margin-top: 10px; resize: vertical; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; margin-top: 5px; }
+
+        .example-section, .incipit-section { margin-top: 20px; }
+        .clickable-item { background: #f1f2f6; border-left: 4px solid var(--accent); padding: 15px; margin-bottom: 15px; cursor: pointer; transition: 0.3s; }
+        .clickable-item:hover { background: #dfe4ea; }
+        .item-title { font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; }
+        .item-text { font-size: 0.9em; font-style: italic; color: #444; line-height: 1.8; }
+
+        .btn-gen { background: var(--accent); color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; margin-top: 20px; }
+        .btn-gen:hover { background: #2980b9; }
+
+        #final-output { display: none; background: #e8f4fd; border: 2px dashed var(--accent); padding: 20px; margin-top: 30px; }
+        
+        .grid-eval { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .grid-eval th, .grid-eval td { border: 1px solid var(--border); padding: 12px; text-align: left; }
+        .grid-eval th { background: #f1f2f6; }
+
+        .sommaire { background: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .sommaire ul { list-style: none; padding: 0; }
+        .sommaire li { font-weight: bold; color: var(--primary); }
+
+        .chip { display: inline-block; background: #e8f4fd; border: 1px solid var(--accent); padding: 5px 12px; border-radius: 20px; font-size: 0.85em; cursor: pointer; margin: 5px 2px; }
+        .chip:hover { background: var(--accent); color: white; }
+
+        /* NOUVEAUX STYLES POUR LES CORRECTIONS DE QUESTIONS */
+        .q-correction { display: none; background: #f4ecf7; border: 1px solid var(--info); padding: 10px; border-radius: 5px; margin-top: 5px; font-size: 0.9em; color: #4a235a; }
+        .btn-q-corr { background: var(--info); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75em; margin-top: 5px; }
+        
+        .correction-box { display: none; background: #f0fff4; border: 1px solid var(--success); padding: 15px; border-radius: 5px; margin-top: 10px; }
+        .btn-corr { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
+<body>
 
-    <div id="app" class="max-w-2xl mx-auto pb-10">
-        
-        <!-- BARRE DE NAVIGATION HAUT -->
-        <nav class="bg-indigo-700 text-white p-4 shadow-lg mb-6 sticky top-0 z-50 flex justify-between items-center">
-            <span class="font-bold">App-Pédagogique v1.0</span>
-            <button id="btn-home" onclick="goHome()" class="hidden bg-indigo-500 px-3 py-1 rounded text-sm">Accueil</button>
-        </nav>
+<div class="app-container">
+    <header>
+        <h1>Français : 3ème Année Collège</h1>
+        <p><strong>Écrit 8 : Produire la fin d’une nouvelle</strong></p>
+        <p class="prof-header">Professeur : Mr Mohamed EL KHOUMSSI</p>
+    </header>
 
-        <!-- ECRAN ACCUEIL -->
-        <div id="screen-home" class="p-4">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-black text-slate-800">Modules de Langue</h1>
-                <p class="text-slate-600">Niveau : Secondaire / Universitaire</p>
-            </div>
-            <div class="grid grid-cols-1 gap-4">
-                <button onclick="loadModule('condition')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-blue-500 group">
-                    <h2 class="text-xl font-bold group-hover:text-blue-600">1. L'expression de la Condition</h2>
-                </button>
-                <button onclick="loadModule('hypothese')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-purple-500 group">
-                    <h2 class="text-xl font-bold group-hover:text-purple-600">2. L'expression de l'Hypothèse</h2>
-                </button>
-                <button onclick="loadModule('consequence')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-green-500 group">
-                    <h2 class="text-xl font-bold group-hover:text-green-600">3. L'expression de la Conséquence</h2>
-                </button>
-                <button onclick="loadModule('concession')" class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition text-left border-l-8 border-red-500 group">
-                    <h2 class="text-xl font-bold group-hover:text-red-600">4. L'expression de la Concession</h2>
-                </button>
-            </div>
-        </div>
-
-        <!-- ECRAN MODULE (CONTENU COMPLET) -->
-        <div id="screen-module" class="hidden p-4">
-            <h2 id="mod-title" class="text-2xl font-black mb-4 text-slate-800 uppercase tracking-tight"></h2>
-            
-            <!-- ONGLETS -->
-            <div class="flex bg-white rounded-t-xl border-b overflow-hidden">
-                <button id="tab-btn-obs" onclick="switchTab('obs')" class="flex-1 py-3 text-sm uppercase tracking-wider tab-active">Observation</button>
-                <button id="tab-btn-syn" onclick="switchTab('syn')" class="flex-1 py-3 text-sm uppercase tracking-wider">Synthèse</button>
-                <button id="tab-btn-quiz" onclick="switchTab('quiz')" class="flex-1 py-3 text-sm uppercase tracking-wider">Application (10s)</button>
-            </div>
-
-            <div class="bg-white p-6 rounded-b-xl shadow-sm min-h-[400px]">
-                <!-- CONTENU OBSERVATION -->
-                <div id="tab-obs" class="tab-content">
-                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
-                        <h3 class="font-bold text-blue-800 mb-2 underline">Support d'observation :</h3>
-                        <p id="obs-support" class="italic text-slate-700"></p>
-                    </div>
-                    <div class="space-y-4">
-                        <h3 class="font-bold text-slate-800">Questions d'analyse :</h3>
-                        <ul id="obs-questions" class="list-decimal ml-5 space-y-3 text-slate-600"></ul>
-                    </div>
-                </div>
-
-                <!-- CONTENU SYNTHÈSE -->
-                <div id="tab-syn" class="tab-content hidden prose prose-slate">
-                    <div id="syn-content" class="space-y-4"></div>
-                </div>
-
-                <!-- CONTENU QUIZ -->
-                <div id="tab-quiz" class="tab-content hidden text-center">
-                    <div class="flex justify-between items-center mb-6 px-2">
-                        <div id="timer" class="text-3xl font-black text-indigo-600">10</div>
-                        <div class="text-sm font-bold bg-slate-100 px-3 py-1 rounded" id="quiz-progress">1 / 18</div>
-                    </div>
-                    <p id="quiz-question" class="text-xl font-semibold mb-8 text-slate-800"></p>
-                    <div id="quiz-options" class="grid grid-cols-1 gap-3"></div>
-                    <div id="quiz-feedback" class="mt-6 p-4 rounded-xl hidden font-bold"></div>
-                </div>
-            </div>
-        </div>
+    <div class="sommaire">
+        <strong>Sommaire</strong>
+        <ul>
+            <li>I- Compréhension</li>
+            <li>II- Production</li>
+            <li>III- Évaluation</li>
+            <li>IV- Projet</li>
+        </ul>
     </div>
 
-    <script>
-        const data = {
-            condition: {
-                title: "La Condition",
-                obs: {
-                    sup: "« Si tu étudies avec rigueur, tu réussiras ton examen. Au cas où tu aurais des difficultés, préviens-moi. Tu obtiendras ton diplôme à condition que tu travailles. »",
-                    q: ["Quelle est l'action principale dans la 1ère phrase ?", "Quelle est la condition sine qua non ?", "Analysez les temps avec 'Si'.", "Quel mode après 'au cas où' ?", "Nuance de 'à condition que' ?"]
-                },
-                syn: `<h3>I. Le système avec « Si »</h3>
-                      <p>- <b>Réel :</b> <span class="latex-style">Si + présent → futur</span><br>- <b>Éventuel :</b> <span class="latex-style">Si + imparfait → conditionnel présent</span></p>
-                      <h3>II. Conjonctions et Prépositions</h3>
-                      <p>- <b>Subjonctif :</b> À condition que, pourvu que.<br>- <b>Conditionnel :</b> Au cas où.<br>- <b>Prépositions :</b> En cas de + Nom, à condition de + Infinitif.</p>`,
-                quiz: [
-                    {q: "Si vous (prendre) le train de 8h...", o: ["prendrez", "prenez", "pris"], r: "prenez"},
-                    {q: "Nous irions en vacances si nous (avoir)...", o: ["aurions", "avions", "aurons"], r: "avions"},
-                    {q: "Au cas où il (pleuvoir)...", o: ["pleuvrait", "pleuve", "pleuvra"], r: "pleuvrait"},
-                    {q: "À condition que tu me le (rendre)...", o: ["rends", "rendes", "rendra"], r: "rendes"},
-                    {q: "Pourvu qu'il (faire) beau...", o: ["fait", "fasse", "fera"], r: "fasse"},
-                    {q: "Si j'avais su, je ne (venir) pas...", o: ["viendrais", "serais venu", "suis venu"], r: "serais venu"},
-                    {q: "Transformation : S'il y a une urgence...", o: ["En cas d'urgence", "En cas qu'urgence"], r: "En cas d'urgence"},
-                    {q: "Transformation : Je viendrai si tu m'invites...", o: ["À condition que tu m'invites", "À condition de m'inviter"], r: "À condition que tu m'invites"},
-                    {q: "Transformation : Il réussira s'il fait un effort...", o: ["Pour peu qu'il fait", "Pour peu qu'il fasse"], r: "Pour peu qu'il fasse"},
-                    {q: "Transformation : Tu peux sortir mais finis tes devoirs...", o: ["À condition de finir", "À condition que tu finis"], r: "À condition de finir"},
-                    {q: "Si le vent se lève... (Au cas où)", o: ["Au cas où il se lèverait", "Au cas où il se lève"], r: "Au cas où il se lèverait"},
-                    {q: "Elle guérira si elle suit le traitement... (Pourvu)", o: ["Pourvu qu'elle suive", "Pourvu qu'elle suit"], r: "Pourvu qu'elle suive"},
-                    {q: "Si l'humanité ne réduit pas le plastique...", o: ["Océans seront pollués", "Océans seraient pollués"], r: "Océans seront pollués"},
-                    {q: "Au cas où vous perdriez votre chemin...", o: ["Téléphonez-moi", "Téléphoner-moi"], r: "Téléphonez-moi"},
-                    {q: "Vous pouvez passer à condition que...", o: ["Vous fassiez attention", "Vous faites attention"], r: "Vous fassiez attention"},
-                    {q: "Si les dinosaures n'avaient pas disparu...", o: ["L'homme n'existerait pas", "L'homme n'existera pas"], r: "L'homme n'existerait pas"},
-                    {q: "Pourvu que le gouvernement (agir) vite...", o: ["agisse", "agit"], r: "agisse"},
-                    {q: "En cas de panne d'électricité...", o: ["allumez des bougies", "allumer des bougies"], r: "allumez des bougies"}
-                ]
-            },
-            hypothese: {
-                title: "L'Hypothèse",
-                obs: {
-                    sup: "« Supposons que nous soyons perdus, que ferions-nous ? À supposer qu'il accepte, le projet verrait le jour. »",
-                    q: ["Faits certains ou imaginaires ?", "Mode après 'supposons que' ?", "Sentiment exprimé ?", "Remplaçable par 'Si' ?", "Ponctuation type ?"]
-                },
-                syn: `<p>L'hypothèse est une supposition incertaine.</p>
-                      <ul><li><b>Subjonctif :</b> Supposons que, en admettant que.</li><li><b>Conditionnel :</b> Au cas où.</li><li><b>Gérondif :</b> En travaillant davantage (Si tu travaillais...).</li></ul>`,
-                quiz: [
-                    {q: "En admettant qu'il (être) coupable...", o: ["est", "soit", "serait"], r: "soit"},
-                    {q: "À supposer que nous (partir)...", o: ["partions", "partons", "partirions"], r: "partions"},
-                    {q: "Supposons que le prix (baisser)...", o: ["baisse", "baisses", "baisserait"], r: "baisse"},
-                    {q: "Fussiez-vous riche...", o: ["vous seriez heureux", "vous êtes heureux"], r: "vous seriez heureux"},
-                    {q: "En (chercher) bien...", o: ["cherchant", "chercher", "cherché"], r: "cherchant"},
-                    {q: "À supposer que vous (avoir) le choix...", o: ["ayez", "avez", "auriez"], r: "ayez"},
-                    {q: "Si nous manquons le train... (À supposer que)", o: ["À supposer qu'on manque", "À supposer qu'on manquions"], r: "À supposer qu'on manquions"},
-                    {q: "Si vous gagnez au loto... (En admettant que)", o: ["En admettant que vous gagniez", "En admettant que vous gagnez"], r: "En admettant que vous gagniez"},
-                    {q: "Si la terre s'arrêtait... (Supposons que)", o: ["Supposons qu'elle s'arrêtât", "Supposons qu'elle s'arrête"], r: "Supposons qu'elle s'arrêtât"},
-                    {q: "Si tu m'avais écouté... (Gérondif)", o: ["En m'écoutant", "En m'avoir écouté"], r: "En m'écoutant"},
-                    {q: "S'il vient demain... (Dans l'hypothèse où)", o: ["Hypothèse où il viendrait", "Hypothèse où il vient"], r: "Hypothèse où il viendrait"},
-                    {q: "Si vous aviez un don... (À supposer que)", o: ["À supposer que vous eussiez", "À supposer que vous aviez"], r: "À supposer que vous eussiez"},
-                    {q: "Mars : À supposer que l'homme colonise Mars...", o: ["La vie changerait", "La vie changera"], r: "La vie changerait"},
-                    {q: "IA : En admettant que l'IA devienne consciente...", o: ["Ce serait dangereux", "Ce sera dangereux"], r: "Ce serait dangereux"},
-                    {q: "Temps : Supposons qu'on voyage dans le passé...", o: ["On verrait l'histoire", "On voit l'histoire"], r: "On verrait l'histoire"},
-                    {q: "Mort : À supposer que la mort soit vaincue...", o: ["Terre serait pleine", "Terre est pleine"], r: "Terre serait pleine"},
-                    {q: "Pensées : Si nous pouvions lire les pensées...", o: ["Plus de secrets", "Plus de secrets (subjonctif)"], r: "Plus de secrets"},
-                    {q: "Langue : En admettant une langue unique...", o: ["Échanges faciles", "Échanges sont faciles"], r: "Échanges faciles"}
-                ]
-            },
-            consequence: {
-                title: "La Conséquence",
-                obs: {
-                    sup: "« Il a tant neigé que les routes sont bloquées. Il est trop tard pour que nous puissions sortir. Sa peur était telle qu'il restait pétrifié. »",
-                    q: ["Fait initial phrase 1 ?", "Résultat de ce fait ?", "Mot d'intensité ?", "Pourquoi le subjonctif phrase 2 ?", "Adjectif phrase 3 ?"]
-                },
-                syn: `<p>Exprime le résultat d'une action.</p>
-                      <ul><li><b>Indicatif :</b> Si bien que, de sorte que, tellement... que.</li><li><b>Subjonctif :</b> Trop... pour que, assez... pour que.</li><li><b>Corrélation :</b> <span class="latex-style">Si + Adj + que</span>.</li></ul>`,
-                quiz: [
-                    {q: "Il fait froid. Les lacs gèlent.", o: ["si bien que", "pour que"], r: "si bien que"},
-                    {q: "Elle est fatiguée. Elle s'endort.", o: ["tellement... que", "trop... pour"], r: "tellement... que"},
-                    {q: "Il y avait du bruit. Rien entendu.", o: ["tant de... que", "tel... que"], r: "tant de... que"},
-                    {q: "Exercice difficile. Pas fini.", o: ["trop... pour que je le finisse", "trop... pour je finis"], r: "trop... pour que je le finisse"},
-                    {q: "Il a travaillé dur. Réussite.", o: ["Par conséquent", "Pourtant"], r: "Par conséquent"},
-                    {q: "Tempête forte. Arbres déracinés.", o: ["Une telle... que", "Si... que"], r: "Une telle... que"},
-                    {q: "Il court ____ vite qu'il a gagné.", o: ["si", "tant de"], r: "si"},
-                    {q: "Elle a ____ d'amis qu'elle sort tout le temps.", o: ["tant", "tellement"], r: "tant"},
-                    {q: "Il a ____ plu que tout est inondé.", o: ["tant", "tellement"], r: "tant"},
-                    {q: "Il fait un ____ bruit !", o: ["tel", "si"], r: "tel"},
-                    {q: "C'est ____ beau que je pleure.", o: ["si", "tant"], r: "si"},
-                    {q: "Vent avec une ____ force.", o: ["telle", "tel"], r: "telle"},
-                    {q: "Il est très jeune ; ne peut pas comprendre.", o: ["trop jeune pour comprendre", "assez jeune pour comprendre"], r: "trop jeune pour comprendre"},
-                    {q: "Intelligent ; peut résoudre.", o: ["assez pour résoudre", "trop pour résoudre"], r: "assez pour résoudre"},
-                    {q: "Soupe chaude ; imangeable.", o: ["trop chaude pour être mangée", "assez chaude pour manger"], r: "trop chaude pour être mangée"},
-                    {q: "Énigme simple ; tout le monde trouve.", o: ["assez simple pour que tous trouvent", "trop simple pour trouver"], r: "assez simple pour que tous trouvent"},
-                    {q: "Nuit ; on ne voit rien.", o: ["trop nuit pour voir", "assez nuit pour voir"], r: "trop nuit pour voir"},
-                    {q: "Courageux ; peut affronter.", o: ["assez courageux pour affronter", "trop courageux pour affronter"], r: "assez courageux pour affronter"}
-                ]
-            },
-            concession: {
-                title: "La Concession",
-                obs: {
-                    sup: "« Bien qu'il soit malade, il est venu. Il est riche, pourtant il vit modestement. »",
-                    q: ["Est-ce logique de travailler malade ?", "Mode après 'Bien que' ?", "Mot d'opposition phrase 2 ?", "Portée phrase 3 ?", "Changement avec 'Malgré' ?"]
-                },
-                syn: `<p>Contradiction entre deux faits liés.</p>
-                      <ul><li><b>Subjonctif :</b> Bien que, quoique.</li><li><b>Indicatif :</b> Même si.</li><li><b>Préposition :</b> Malgré + Nom.</li><li><b>Idiome :</b> Avoir beau + Infinitif.</li></ul>`,
-                quiz: [
-                    {q: "(Sa force), il n'a pas pu...", o: ["Malgré", "Bien que"], r: "Malgré"},
-                    {q: "(Il fasse) froid, il sort...", o: ["Bien que", "Malgré"], r: "Bien que"},
-                    {q: "(Ses efforts), il a échoué...", o: ["Malgré", "Quoique"], r: "Malgré"},
-                    {q: "(Nous soyons) en été, il fait froid...", o: ["Bien que", "Malgré"], r: "Bien que"},
-                    {q: "(La pluie), le match continue...", o: ["Malgré", "Bien que"], r: "Malgré"},
-                    {q: "(Elle soit) timide, elle parle...", o: ["Bien que", "Malgré"], r: "Bien que"},
-                    {q: "Bien qu'il s'entraîne, pas de progrès.", o: ["Il a beau s'entraîner", "Il s'entraîne bien"], r: "Il a beau s'entraîner"},
-                    {q: "Quoique je cherche mes clés...", o: ["J'ai beau chercher", "Je cherche beau"], r: "J'ai beau chercher"},
-                    {q: "Même s'il crie...", o: ["Il a beau crier", "Il crie beau"], r: "Il a beau crier"},
-                    {q: "Malgré ses explications...", o: ["Il a beau expliquer", "Bien qu'expliquer"], r: "Il a beau expliquer"},
-                    {q: "Bien qu'elle soit riche...", o: ["Elle a beau être riche", "Bien qu'être riche"], r: "Elle a beau être riche"},
-                    {q: "Quoique tu insistes...", o: ["Tu as beau insister", "Malgré insister"], r: "Tu as beau insister"},
-                    {q: "Il est âgé ___ actif.", o: ["pourtant", "bien que"], r: "pourtant"},
-                    {q: "Je n'aime pas le sport ___ j'y vais.", o: ["bien que", "malgré"], r: "bien que"},
-                    {q: "Il pleut ___ nous sortons.", o: ["même si", "bien que"], r: "même si"},
-                    {q: "Intelligent ___ commet des erreurs.", o: ["néanmoins", "quoique"], r: "néanmoins"},
-                    {q: "Ami ___ je ne peux pas t'aider.", o: ["quand bien même", "malgré"], r: "quand bien même"},
-                    {q: "Voiture ___ prend le bus.", o: ["au lieu de l'utiliser", "pourtant utiliser"], r: "au lieu de l'utiliser"}
-                ]
-            }
-        };
-
-        let currentMod = null;
-        let qIdx = 0;
-        let score = 0;
-        let timer;
-        let timeLeft = 10;
-
-        function loadModule(key) {
-            currentMod = data[key];
-            qIdx = 0; score = 0;
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-module').classList.remove('hidden');
-            document.getElementById('btn-home').classList.remove('hidden');
-            document.getElementById('mod-title').innerText = currentMod.title;
+    <!-- SECTION I : COMPRÉHENSION AVEC CORRECTIONS AJOUTÉES -->
+    <section>
+        <h2>I- Compréhension</h2>
+        <div class="content-box">
+            <p>Vous avez déjà rédigé les trois premières étapes de la nouvelle : « situation stable », « événement inattendu » et les « événements ».</p>
+            <p>Imaginez, pour préparer la fin de cette nouvelle, les deux étapes restantes : la solution et la situation finale.</p>
+            <p>Je vais participer à la rédaction des deux étapes restantes de la nouvelle que nous allons produire collectivement.</p>
             
-            // Obs
-            document.getElementById('obs-support').innerText = currentMod.obs.sup;
-            const qList = document.getElementById('obs-questions');
-            qList.innerHTML = currentMod.obs.q.map(q => `<li>${q}</li>`).join('');
+            <p><strong>J'imagine ce que fait le personnage principal pour accélérer la solution :</strong></p>
+            <textarea placeholder="Saisissez votre réponse ici..."></textarea>
+            <button class="btn-q-corr" onclick="toggleQ('q1')">Voir la correction</button>
+            <div id="q1" class="q-correction">Correction possible : Le personnage peut découvrir un objet caché, prendre une décision courageuse ou recevoir une aide inattendue qui débloque la situation.</div>
+
+            <p><strong>J’imagine, sous forme d'une chute, une situation finale à la nouvelle (une ou deux phrases) :</strong></p>
+            <textarea placeholder="Saisissez votre réponse ici..."></textarea>
+            <button class="btn-q-corr" onclick="toggleQ('q2')">Voir la correction</button>
+            <div id="q2" class="q-correction">Correction possible : La situation finale doit montrer le retour au calme. Ex : "Depuis ce jour, le village retrouva sa tranquillité et plus personne n'osa s'aventurer dans la forêt."</div>
+
+            <p><strong>Je rappelle le temps verbal à utiliser :</strong></p>
+            <input type="text" placeholder="Réponse...">
+            <button class="btn-q-corr" onclick="toggleQ('q3')">Voir la correction</button>
+            <div id="q3" class="q-correction">Correction : Le passé simple pour les actions de la solution, et l'imparfait ou le présent pour la situation finale.</div>
+
+            <p><strong>Je rappelle des indicateurs de temps convenables :</strong></p>
+            <label>a- pour la solution :</label>
+            <div class="chips">
+                <span class="chip" onclick="fillField('ind_sol', 'Soudain, ')">Soudain</span>
+                <span class="chip" onclick="fillField('ind_sol', 'Tout à coup, ')">Tout à coup</span>
+                <span class="chip" onclick="fillField('ind_sol', 'Enfin, ')">Enfin</span>
+            </div>
+            <input type="text" id="ind_sol" placeholder="Réponse...">
+            <button class="btn-q-corr" onclick="toggleQ('q4')">Voir la correction</button>
+            <div id="q4" class="q-correction">Correction : Soudain, Tout à coup, Brusquement, Enfin, Finalement.</div>
+
+            <label>b- pour la situation finale :</label>
+            <div class="chips">
+                <span class="chip" onclick="fillField('ind_fin', 'Désormais, ')">Désormais</span>
+                <span class="chip" onclick="fillField('ind_fin', 'Depuis ce jour, ')">Depuis ce jour</span>
+                <span class="chip" onclick="fillField('ind_fin', 'C\'est ainsi que... ')">C'est ainsi que</span>
+            </div>
+            <input type="text" id="ind_fin" placeholder="Réponse...">
+            <button class="btn-q-corr" onclick="toggleQ('q5')">Voir la correction</button>
+            <div id="q5" class="q-correction">Correction : Désormais, Depuis lors, C'est ainsi que, Finalement, dorénavant.</div>
+
+            <p><strong>Je rappelle la nature des phrases à utiliser :</strong></p>
+            <textarea placeholder="Réponse..."></textarea>
+            <button class="btn-q-corr" onclick="toggleQ('q6')">Voir la correction</button>
+            <div id="q6" class="q-correction">Correction : Des phrases courtes et percutantes pour la solution (action), et des phrases plus longues ou descriptives pour la situation finale.</div>
+
+            <p><strong>Je rappelle des expressions de l'hypothèse et de la conséquence que je peux utiliser :</strong></p>
+            <textarea placeholder="Réponse..."></textarea>
+            <button class="btn-q-corr" onclick="toggleQ('q7')">Voir la correction</button>
+            <div id="q7" class="q-correction">Correction : Hypothèse (Si + Imparfait -> Conditionnel) ; Conséquence (C'est pourquoi, par conséquent, si bien que).</div>
+        </div>
+    </section>
+
+    <!-- SECTION II : PRODUCTION (AVEC INCIPITS LONGS ET CORRECTIONS DE SUJETS) -->
+    <section class="incipit-section">
+        <h2>II- Production (Sujets Guidés)</h2>
+        <p><em>Chaque début de texte ci-dessous contient la situation initiale et les péripéties. Rédigez la fin (au moins 10 lignes).</em></p>
+        <div id="incipit-list"></div>
+    </section>
+
+    <section>
+        <div class="content-box">
+            <div id="selected-incipit" style="display:none; padding:15px; background:#e8f4fd; border-left:4px solid var(--accent); margin-bottom:15px;">
+                <strong>Début choisi :</strong> <p id="incipit-text" style="font-style: italic;"></p>
+            </div>
+
+            <p><strong>Ma Solution (Étape 4) - Visez 10 lignes :</strong></p>
+            <textarea id="prod_sol" style="min-height: 150px;" placeholder="Utilisez le passé simple et des indicateurs de solution..."></textarea>
+
+            <p><strong>Ma Situation Finale (Étape 5) - Visez 10 lignes :</strong></p>
+            <textarea id="prod_fin" style="min-height: 150px;" placeholder="Utilisez l'imparfait ou le présent pour la stabilité..."></textarea>
+
+            <button class="btn-gen" onclick="genererProduction()">Assembler ma production finale</button>
+            <button class="btn-corr" id="btn-show-corr" style="display:none;" onclick="toggleCorrection()">Afficher la proposition de correction du sujet</button>
             
-            // Syn
-            document.getElementById('syn-content').innerHTML = currentMod.syn;
-            
-            switchTab('obs');
+            <div id="correction-display" class="correction-box">
+                <strong>Proposition de correction complète :</strong>
+                <p id="corr-text" style="white-space: pre-wrap; font-size: 0.9em; color: #1b5e20;"></p>
+            </div>
+        </div>
+
+        <div id="final-output">
+            <h3>Résultat Final de ma nouvelle :</h3>
+            <p id="output-text" style="white-space: pre-wrap;"></p>
+            <button class="btn-gen" style="background:#7f8c8d;" onclick="window.print()">Imprimer ma copie</button>
+        </div>
+    </section>
+
+    <!-- BANQUE D'EXEMPLES -->
+    <section class="example-section">
+        <h3>III- Banque d'exemples modèles (10 lignes)</h3>
+        <p><em>Ces exemples servent de modèles pour comprendre la structure attendue.</em></p>
+        <div id="example-list"></div>
+    </section>
+
+    <!-- SECTION III : ÉVALUATION -->
+    <section>
+        <h2>III- Évaluation</h2>
+        <div class="content-box">
+            <p>A la fin de cette séquence, voici ce que :</p>
+            <table class="grid-eval">
+                <tr><th>Objectifs</th><th>Je maîtrise bien</th><th>Je maîtrise peu</th><th>Je ne maîtrise pas</th></tr>
+                <tr><td>Imaginer une solution cohérente</td><td><input type="radio" name="e1"></td><td><input type="radio" name="e1"></td><td><input type="radio" name="e1"></td></tr>
+                <tr><td>Rédiger une chute (Situation finale)</td><td><input type="radio" name="e2"></td><td><input type="radio" name="e2"></td><td><input type="radio" name="e2"></td></tr>
+                <tr><td>Utiliser les outils de la nouvelle</td><td><input type="radio" name="e3"></td><td><input type="radio" name="e3"></td><td><input type="radio" name="e3"></td></tr>
+            </table>
+        </div>
+    </section>
+
+    <!-- SECTION IV : PROJET -->
+    <section>
+        <h2>IV- Projet</h2>
+        <div class="content-box">
+            <p>Vous avez déjà rédigé les trois premières étapes de la nouvelle : « situation stable », « événement inattendu » et les « événements ».</p>
+            <p><strong>Je recopie les deux étapes de la nouvelle : la solution et la situation finale retenues par mon groupe :</strong></p>
+            <textarea style="min-height: 200px;" placeholder="Espace dédié au travail de groupe..."></textarea>
+        </div>
+    </section>
+</div>
+
+<script>
+    // 10 INCIPITS DÉVELOPPÉS (MINIMUM 10 LIGNES CHACUN) AVEC CORRECTIONS
+    const subjects = [
+        { 
+            t: "Sujet 1 : L'ascenseur bloqué", 
+            c: "Amine rentrait chez lui après une très longue journée de cours au lycée. Il était épuisé et ne pensait qu'à s'allonger sur son lit. Il entra dans le hall de l'immeuble, salua le concierge et appuya sur le bouton de l'ascenseur. La cabine arriva, il monta et pressa le chiffre 7. Soudain, entre le quatrième et le cinquième étage, un choc terrible secoua l'appareil. Dans un grincement de métal effrayant, l'ascenseur s'arrêta net. Les lumières vacillèrent puis s'éteignirent complètement, plongeant Amine dans une obscurité totale et oppressante. Il chercha le bouton d'alarme à tâtons, mais celui-ci semblait désactivé. Il commença à frapper contre les parois en acier, espérant que quelqu'un l'entendrait, mais le silence du couloir était de plomb. L'air commençait à se faire rare et la panique gagnait son cœur qui battait à tout rompre. Il réalisa qu'il était pris au piège dans une boîte de conserve géante suspendue dans le vide.",
+            corr: "SOLUTION : Enfin, il se souvint qu'il avait son téléphone portable dans sa poche arrière. Malgré le manque de réseau, il utilisa la fonction lampe pour examiner la trappe de secours au plafond. Avec une force née du désespoir, il grimpa sur la rampe, poussa la trappe et réussit à se hisser sur le toit de la cabine. Là, il vit une échelle de service et monta jusqu'au palier suivant où il força les portes de l'intérieur.\n\nSITUATION FINALE : Désormais, Amine ne prend plus jamais l'ascenseur de son immeuble. Il préfère monter les sept étages à pied, ce qui a grandement amélioré sa condition physique. Depuis ce jour, il sourit chaque fois qu'il croise ses voisins essoufflés, heureux de sentir la terre ferme sous ses pieds et l'air libre dans ses poumons."
+        },
+        { 
+            t: "Sujet 2 : L'orage en montagne", 
+            c: "La matinée avait commencé sous un soleil radieux et une brise légère qui enchantait les randonneurs. Le groupe, composé de cinq amis, marchait avec enthousiasme vers le sommet du mont Toubkal. Cependant, vers quatorze heures, le ciel changea brusquement de couleur, passant d'un bleu azur à un gris menaçant. Des nuages épais et chargés d'électricité enveloppèrent les crêtes en quelques minutes seulement. Un vent glacial se leva, hurlant entre les rochers comme un loup affamé. La pluie se transforma rapidement en une grêle violente qui cinglait les visages. La visibilité devint presque nulle, et le sentier, balisé par des pierres, disparut sous les eaux de ruissellement. Paniqués, les amis tentèrent de rebrousser chemin, mais ils réalisèrent vite qu'ils tournaient en rond. Le froid commençait à engourdir leurs membres et l'obscurité précoce ajoutait à leur terreur. Ils étaient isolés, trempés jusqu'aux os, sur un flanc de montagne instable.",
+            corr: "SOLUTION : Tout à coup, le guide du groupe aperçut une faible lueur orangée à travers le rideau de pluie. Il encouragea ses amis à marcher vers cette direction en se tenant par la main pour ne pas se perdre. C'était une petite grotte de berger où un feu crépitait encore. Ils s'y réfugièrent rapidement, se serrant les uns contre les autres pour se réchauffer tandis que l'orage tonnait à l'extérieur.\n\nSITUATION FINALE : C'est ainsi que l'aventure se termina sans tragédie. Depuis ce jour, les cinq amis consultent toujours trois bulletins météo différents avant de lacer leurs chaussures de marche. Ils gardent un souvenir impérissable de cette nuit dans la grotte, qui a soudé leur amitié pour la vie."
+        },
+        {
+            t: "Sujet 3 : Le message codé",
+            c: "Sarah aimait passer ses après-midi à la bibliothèque municipale, cet endroit calme où l'odeur du vieux papier l'apaisait. Un mercredi, en ouvrant un exemplaire très ancien des 'Contes de la crypte', elle y trouva une enveloppe jaunie glissée entre deux pages. À l'intérieur, un papier portait une série de chiffres et de symboles étranges dessinés à l'encre rouge. Curieuse, elle commença à déchiffrer le code en utilisant une grille de substitution qu'elle avait apprise dans ses jeux d'enfance. Les mots commencèrent à apparaître : 'Sous le saule pleureur du parc, là où l'ombre touche la pierre à midi'. Intriguée par cette découverte, elle se rendit au parc le lendemain, à l'heure précise indiquée. Elle trouva effectivement une pierre plate marquée d'une croix. Elle commença à creuser avec un bâton, le cœur battant d'excitation. Soudain, ses doigts rencontrèrent un objet dur et froid, mais au moment de le sortir, elle entendit un craquement de branches derrière elle. Une ombre immense se projetait sur le sol devant elle.",
+            corr: "SOLUTION : Soudain, elle se retourna et vit que ce n'était que le vieux gardien du parc qui portait un grand râteau. Ce dernier lui sourit et lui expliqua qu'il avait caché ce 'trésor' pour un jeu de piste organisé pour les enfants du quartier. Il l'aida à déterrer une petite boîte en métal qui contenait des pièces de collection et une vieille photo du parc datant d'un siècle.\n\nSITUATION FINALE : Désormais, Sarah ne voit plus le parc comme un simple espace vert, mais comme un lieu chargé d'histoire. Elle est devenue l'assistante bénévole du gardien pour créer de nouveaux mystères pour les plus jeunes. Chaque après-midi, elle sourit en pensant que la curiosité l'a menée vers une passion nouvelle."
+        },
+        {
+            t: "Sujet 4 : Le match final",
+            c: "Le stade était plein à craquer et l'ambiance était électrique pour cette finale inter-collèges. Le score était bloqué à un partout depuis le début de la seconde mi-temps. Amine, le capitaine de l'équipe locale, sentait ses jambes devenir lourdes sous l'effet de la fatigue. Il ne restait plus que soixante secondes dans le temps additionnel. Le public scandait les noms des joueurs dans un vacarme assourdissant. Tout à coup, l'attaquant adverse, un garçon rapide comme l'éclair, récupéra le ballon au milieu de terrain. Il élimina deux défenseurs d'un dribble dévastateur et se retrouva seul face au but. Le gardien de but d'Amine glissa sur la pelouse mouillée en tentant de sortir à sa rencontre. Les supporters de l'équipe adverse commençaient déjà à se lever pour célébrer la victoire. Amine était le dernier rempart, mais il se trouvait encore à dix mètres de l'action. Il devait tenter un tacle désespéré pour sauver son équipe du désastre imminent.",
+            corr: "SOLUTION : Enfin, Amine se jeta dans une glissade incroyable, étirant sa jambe au maximum. Ses crampons effleurèrent le ballon juste au moment où l'attaquant allait tirer. Le ballon fut dévié en corner au dernier millième de seconde. Sur l'action suivante, Amine récupéra le ballon, remonta tout le terrain et adressa un centre parfait pour son attaquant qui marqua de la tête juste avant le coup de sifflet final.\n\nSITUATION FINALE : C'est ainsi que l'équipe souleva le trophée tant convoité sous une pluie de confettis dorés. Depuis ce jour, Amine est respecté comme le capitaine le plus courageux de l'histoire du collège. Il garde sa médaille accrochée au-dessus de son bureau, lui rappelant que rien n'est jamais perdu avant la fin."
+        },
+        {
+            t: "Sujet 5 : L'examen de français",
+            c: "Yassine arriva devant la porte de la salle de classe avec cinq minutes de retard. En entrant, il fut frappé par le silence inhabituel qui régnait. Tous ses camarades étaient penchés sur leurs pupitres, la plume à la main, écrivant avec une ferveur inquiétante. Le professeur de français, Mr El Khoumssi, se tenait près du tableau, le regard fixé sur sa montre. Yassine comprit avec horreur qu'il avait totalement oublié que l'examen régional blanc avait lieu ce matin-là. Il n'avait ouvert aucun livre, n'avait appris aucune règle de grammaire et n'avait même pas préparé son matériel. Le professeur lui tendit une feuille de sujet et une double feuille de rédaction en lui indiquant sa place d'un geste sec. Yassine s'assit, les mains tremblantes. Il lut le sujet : 'Produire la fin d'une nouvelle fantastique'. Son esprit était une page blanche, aussi vide que la feuille devant lui. Le tic-tac de l'horloge murale semblait résonner dans sa tête comme un marteau sur une enclume.",
+            corr: "SOLUTION : Heureusement, au bout de dix minutes de panique, il ferma les yeux et se remémora la structure de la nouvelle qu'il avait apprise en classe. Les étapes de la solution et de la situation finale lui revinrent soudainement à l'esprit comme par magie. Il se mit à écrire frénétiquement, laissant son imagination construire un dénouement surprenant basé sur un rêve qu'il avait fait la veille.\n\nSITUATION FINALE : Finalement, Yassine obtint la meilleure note de la classe pour son originalité. Désormais, il ne néglige plus jamais ses révisions, mais il a découvert qu'il possédait un véritable talent pour l'écriture créative. Depuis ce jour, il participe activement à tous les ateliers d'écriture organisés par le collège."
+        },
+        {
+            t: "Sujet 6 : Le chien Rex",
+            c: "Rex était bien plus qu'un simple chien pour la famille El Khoumssi ; il était un compagnon fidèle qui ne les quittait jamais. Pourtant, ce mardi soir, après une promenade au parc, il avait disparu sans laisser de trace. La famille passa toute la nuit à parcourir les rues du quartier, appelant son nom jusqu'à en perdre la voix, mais seul l'écho leur répondait. Le lendemain, ils placardèrent des affiches sur chaque poteau électrique et interrogèrent tous les voisins, en vain. Le troisième jour, une pluie battante s'abattit sur la ville, rendant les recherches encore plus difficiles. Le petit Omar pleurait dans sa chambre, refusant de manger. Vers vingt-deux heures, alors que tout espoir semblait s'éteindre, un bruit étrange attira l'attention du père. C'était un grattement faible et un gémissement plaintif qui semblait provenir de la vieille usine de textile abandonnée, située au bout de l'impasse sombre. L'endroit était connu pour être dangereux et instable. Armé d'une simple lampe de poche, le père décida d'y pénétrer seul.",
+            corr: "SOLUTION : Soudain, à l'intérieur de l'usine, il découvrit Rex coincé sous une vieille palette en bois qui s'était effondrée sur lui. Le pauvre animal était affamé et trempé, mais n'avait rien de cassé. Le père souleva la charge avec précaution et libéra le chien qui lui lécha les mains avec reconnaissance. Il le ramena à la maison en le portant dans ses bras sous la pluie battante.\n\nSITUATION FINALE : Depuis ce jour, Rex porte un collier avec un traceur GPS pour ne plus jamais se perdre. La joie est revenue dans la maison et Omar passe tout son temps libre à jouer avec son compagnon retrouvé. La famille reste vigilante, mais le lien qui les unit au chien est devenu encore plus fort après cette épreuve."
+        },
+        {
+            t: "Sujet 7 : La forêt obscure",
+            c: "Les trois amis, animés par un défi stupide, s'étaient aventurés dans la forêt de pins qui bordait le village après le coucher du soleil. Les anciens racontaient que des ombres mouvantes y résidaient, mais les adolescents n'y croyaient pas. Cependant, plus ils s'enfonçaient dans les sous-bois, plus le silence devenait lourd et oppressant. Les pins, hauts et sombres, semblaient se rapprocher les uns des autres pour bloquer toute issue. Soudain, la lampe de poche de l'un d'eux commença à faiblir, projetant des lueurs incertaines sur les troncs tortueux. Un craquement sec de branche brisée retentit sur leur gauche, puis un autre sur leur droite. Quelque chose de grand et de rapide se déplaçaient dans les buissons, les suivant à distance égale. Ils accélérèrent le pas, mais ils réalisèrent qu'ils étaient revenus à leur point de départ : un vieux chêne foudroyé. Ils étaient perdus et la forêt semblait vouloir les garder prisonniers de son labyrinthe végétal.",
+            corr: "SOLUTION : Enfin, l'un des amis se souvint qu'il avait une boîte d'allumettes dans sa poche. Ils décidèrent d'allumer une petite torche avec une branche de pin résineuse. La lumière vive et l'odeur de la fumée firent fuir les ombres mystérieuses, qui n'étaient en réalité que des sangliers effrayés par leur présence. Ils purent alors voir un sentier forestier qui les ramena directement à la lisière de la forêt.\n\nSITUATION FINALE : C'est ainsi que les trois amis apprirent à respecter la nature et les avertissements des anciens. Désormais, ils ne s'aventurent plus dans les bois la nuit, préférant profiter de la beauté de la forêt pendant la journée. Ils racontent souvent leur aventure aux autres jeunes du village pour les inciter à la prudence."
+        },
+        {
+            t: "Sujet 8 : Le colis anonyme",
+            c: "L'inspecteur Ali aimait le calme de son bureau le dimanche matin. Cependant, ce repos fut interrompu par un bruit sourd sur le pas de sa porte. En ouvrant, il ne vit personne, mais trouva un carton de taille moyenne entouré de ruban adhésif noir. Intrigué, il ramena le colis à l'intérieur et le posa sur sa table de travail. En retirant soigneusement l'emballage, ses yeux s'agrandirent de terreur. À l'intérieur, un mécanisme complexe composé de fils de différentes couleurs était relié à un détonateur numérique. Un écran à cristaux liquides affichait un compte à rebours : 01:00... 00:59... 00:58... Ali comprit immédiatement qu'il s'agissait d'une vengeance d'un gang qu'il avait démantelé le mois précédent. Ses mains devinrent moites et sa respiration s'accéléra. Il n'avait pas le temps d'appeler l'équipe de déminage. Il devait prendre une décision capitale : couper le fil rouge ou le fil bleu. Chaque seconde qui passait le rapprochait d'une explosion certaine.",
+            corr: "SOLUTION : Soudain, il remarqua un petit détail : un des fils n'était relié à rien du tout. Il utilisa ses ciseaux de bureau pour sectionner le fil jaune qui alimentait l'écran. Le compte à rebours s'arrêta net à 00:02. Ali poussa un immense soupir de soulagement en sentant la sueur couler sur son front. Il avait réussi à désamorcer l'engin grâce à son sens de l'observation légendaire.\n\nSITUATION FINALE : Désormais, le bureau de l'inspecteur Ali est équipé d'un système de surveillance ultra-moderne. Le gang responsable a été identifié et arrêté dès le lendemain. Depuis ce jour, Ali est célébré comme un héros par ses collègues et il savoure chaque moment de calme avec encore plus de gratitude qu'auparavant."
+        },
+        {
+            t: "Sujet 9 : Le voyageur",
+            c: "Le train express pour Tanger siffla sur le quai, annonçant son départ imminent. Karima, chargée de deux énormes valises, se précipita vers le wagon numéro quatre. Elle avait économisé toute l'année pour ce voyage et son excitation était à son comble. Cependant, au moment où elle s'apprêtait à monter, elle réalisa avec horreur que son petit sac à bandoulière, celui qui contenait son passeport, son billet de train et tout son argent, n'était plus à son épaule. Elle l'avait certainement oublié sur le banc de la cafétéria où elle avait pris un thé dix minutes plus tôt. Les portes du train commençaient déjà à se refermer automatiquement. Le contrôleur, déjà à bord, lui fit signe qu'il était trop tard pour descendre ou attendre. Karima se retrouva sur le quai, regardant le train s'éloigner avec tous ses rêves de vacances. Elle était seule dans une gare immense, sans papiers et sans un centime en poche. Le désespoir l'envahit totalement.",
+            corr: "SOLUTION : Heureusement, tout à coup, un employé de la gare courut vers elle en agitant un petit sac bleu. C'était exactement son sac qu'il avait retrouvé à la cafétéria. Karima pleura de joie en récupérant ses affaires intactes. L'employé l'aida même à obtenir un billet pour le train suivant qui partait seulement une heure plus tard, sans frais supplémentaires.\n\nSITUATION FINALE : C'est ainsi que Karima put enfin passer ses vacances à Tanger comme prévu. Désormais, elle vérifie ses bagages toutes les cinq minutes lorsqu'elle voyage. Depuis ce jour, elle garde un souvenir ému de l'honnêteté de cet employé de gare et elle est devenue beaucoup plus organisée dans ses déplacements."
+        },
+        {
+            t: "Sujet 10 : La main sur l'épaule",
+            c: "Omar aimait explorer les vieux bâtiments délabrés pour prendre des photos artistiques. Le manoir des 'Trois Fontaines' était sa cible préférée, malgré les rumeurs de malédiction qui pesaient sur la demeure depuis le siècle dernier. Il pénétra dans le salon principal où la poussière dansait dans les rayons du soleil couchant. Il installa son trépied et commença à régler son objectif pour capturer l'escalier en colimaçon majestueux qui menait aux étages. Tout à coup, la température de la pièce chuta brutalement de plusieurs degrés. Un courant d'air glacial fit claquer une porte à l'étage, faisant sursauter le jeune photographe. Il se sentit soudain observé par des milliers d'yeux invisibles cachés dans les coins sombres. En voulant ramasser son cache-objectif, il sentit une pression ferme et glaciale se poser sur son épaule droite. Son sang se glaça dans ses veines. Il n'osait pas se retourner, craignant de voir le visage de l'ombre qui l'avait ainsi saisi par surprise.",
+            corr: "SOLUTION : Finalement, il prit son courage à deux mains et se retourna brusquement en criant. Il vit avec stupeur que ce n'était que le vieux volet en bois qui s'était décroché et reposait contre lui. Le craquement de la charpente avait provoqué cette chute accidentelle au moment précis où il s'était baissé. Il éclata d'un rire nerveux, réalisant que son imagination lui avait joué un mauvais tour.\n\nSITUATION FINALE : Désormais, Omar préfère photographier des paysages en plein air plutôt que des manoirs hantés. Il a exposé ses photos du manoir et a remporté un prix pour l'ambiance mystérieuse qu'il avait su capturer. Depuis ce jour, il sait que la peur naît souvent de l'esprit et non de la réalité, mais il reste tout de même prudent."
         }
+    ];
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.querySelectorAll('[id^="tab-btn-"]').forEach(b => b.classList.remove('tab-active'));
-            
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tab}`).classList.add('tab-active');
-            
-            if(tab === 'quiz') startQuiz();
-            else clearInterval(timer);
-        }
+    // EXEMPLES MODÈLES (10 LIGNES)
+    const examples = [
+        { t: "Exemple Modèle 1", s: "Soudain, le jeune explorateur remarqua une petite encoche dans la paroi rocheuse. Sans hésiter, il y inséra le médaillon ancien qu'il portait au cou. Un mécanisme secret s'enclencha dans un bruit de tonnerre et le mur se déplaça, révélant un passage vers la sortie de la grotte. Il s'y engouffra juste avant que le plafond ne s'écroule définitivement derrière lui.", f: "Désormais, le jeune homme était sain et sauf, tenant fermement le trésor tant convoité. Il rentra au village sous les acclamations des siens qui le croyaient perdu. Depuis ce jour mémorable, il vécut dans l'abondance et ne retourna plus jamais dans les montagnes. La paix et la prospérité régnèrent enfin sur sa demeure pour toujours." }
+    ];
 
-        function startQuiz() {
-            qIdx = 0; score = 0;
-            showQuestion();
-        }
+    // Initialisation
+    const incList = document.getElementById('incipit-list');
+    subjects.forEach((s, i) => {
+        incList.innerHTML += `<div class="clickable-item" onclick="selectSubject(${i})"><span class="item-title">${s.t}</span><span class="item-text">${s.c.substring(0, 150)}...</span></div>`;
+    });
 
-        function showQuestion() {
-            if(qIdx >= currentMod.quiz.length) {
-                alert(`Terminé ! Score : ${score} / ${currentMod.quiz.length}`);
-                goHome();
-                return;
-            }
+    const exList = document.getElementById('example-list');
+    examples.forEach((ex, i) => {
+        exList.innerHTML += `<div class="clickable-item" onclick="loadExample(${i})"><span class="item-title">${ex.t}</span><span class="item-text">${ex.s.substring(0, 100)}...</span></div>`;
+    });
 
-            const q = currentMod.quiz[qIdx];
-            document.getElementById('quiz-progress').innerText = `${qIdx + 1} / ${currentMod.quiz.length}`;
-            document.getElementById('quiz-question').innerText = q.q;
-            document.getElementById('quiz-feedback').classList.add('hidden');
-            
-            const opts = document.getElementById('quiz-options');
-            opts.innerHTML = '';
-            q.o.forEach(opt => {
-                const b = document.createElement('button');
-                b.className = "p-4 bg-slate-50 border-2 border-slate-200 rounded-xl hover:bg-indigo-50 font-medium transition text-left";
-                b.innerText = opt;
-                b.onclick = () => check(opt);
-                opts.appendChild(b);
-            });
+    function selectSubject(i) {
+        document.getElementById('selected-incipit').style.display = 'block';
+        document.getElementById('incipit-text').innerText = subjects[i].c;
+        document.getElementById('corr-text').innerText = subjects[i].corr;
+        document.getElementById('btn-show-corr').style.display = 'block';
+        document.getElementById('correction-display').style.display = 'none';
+        document.getElementById('prod_sol').value = "";
+        document.getElementById('prod_fin').value = "";
+    }
 
-            startTimer();
-        }
+    function toggleQ(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
 
-        function startTimer() {
-            clearInterval(timer);
-            timeLeft = 10;
-            const tDiv = document.getElementById('timer');
-            tDiv.innerText = timeLeft;
-            tDiv.classList.remove('timer-critique');
-            
-            timer = setInterval(() => {
-                timeLeft--;
-                tDiv.innerText = timeLeft;
-                if(timeLeft <= 3) tDiv.classList.add('timer-critique');
-                if(timeLeft <= 0) { clearInterval(timer); check(null); }
-            }, 1000);
-        }
+    function toggleCorrection() {
+        const corr = document.getElementById('correction-display');
+        corr.style.display = (corr.style.display === 'none') ? 'block' : 'none';
+    }
 
-        function check(choice) {
-            clearInterval(timer);
-            const correct = currentMod.quiz[qIdx].r;
-            const feed = document.getElementById('quiz-feedback');
-            feed.classList.remove('hidden');
+    function loadExample(i) {
+        document.getElementById('prod_sol').value = examples[i].s;
+        document.getElementById('prod_fin').value = examples[i].f;
+    }
 
-            if(choice === correct) {
-                score++;
-                feed.innerText = "Correct ! ✨";
-                feed.className = "mt-6 p-4 rounded-xl font-bold bg-green-100 text-green-700";
-            } else {
-                feed.innerText = `Incorrect. Réponse : ${correct}`;
-                feed.className = "mt-6 p-4 rounded-xl font-bold bg-red-100 text-red-700";
-            }
+    function fillField(id, text) { document.getElementById(id).value = text; }
 
-            setTimeout(() => { qIdx++; showQuestion(); }, 1500);
-        }
+    function genererProduction() {
+        const inc = document.getElementById('incipit-text').innerText;
+        const sol = document.getElementById('prod_sol').value;
+        const fin = document.getElementById('prod_fin').value;
+        
+        if(!sol || !fin) { alert("Veuillez remplir la solution et la situation finale !"); return; }
+        
+        let res = "";
+        if(inc) res += "DÉBUT CHOISI :\n" + inc + "\n\n";
+        res += "MA SOLUTION (ÉTAPE 4) :\n" + sol + "\n\n";
+        res += "MA SITUATION FINALE (ÉTAPE 5) :\n" + fin;
+        
+        document.getElementById('output-text').innerText = res;
+        document.getElementById('final-output').style.display = 'block';
+        window.scrollTo(0, document.getElementById('final-output').offsetTop - 50);
+    }
+</script>
 
-        function goHome() {
-            clearInterval(timer);
-            document.getElementById('screen-home').classList.remove('hidden');
-            document.getElementById('screen-module').classList.add('hidden');
-            document.getElementById('btn-home').classList.add('hidden');
-        }
-    </script>
 </body>
 </html>
